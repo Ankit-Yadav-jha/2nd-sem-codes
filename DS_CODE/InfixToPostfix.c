@@ -1,0 +1,75 @@
+//12. Construct a c code to Infix to postfix conversion using a stack.
+
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX 100
+
+char stack[MAX];
+int top = -1;
+
+// Push function
+void push(char x) {
+    stack[++top] = x;
+}
+
+// Pop function
+char pop() {
+    if (top == -1)
+        return -1;
+    else
+        return stack[top--];
+}
+
+// Function to check precedence
+int priority(char x) {
+    if (x == '(')
+        return 0;
+    if (x == '+' || x == '-')
+        return 1;
+    if (x == '*' || x == '/')
+        return 2;
+    if (x == '^')
+        return 3;
+    return 0;
+}
+
+int main() {
+    char exp[MAX];
+    char *e, x;
+
+    printf("Experiment No. 12\n");
+
+    printf("Enter the infix expression: ");
+    scanf("%s", exp);
+
+    e = exp;
+
+    printf("Postfix Expression: ");
+
+    while (*e != '\0') {
+        if (isalnum(*e)) {
+            printf("%c", *e);  // operand
+        } 
+        else if (*e == '(') {
+            push(*e);
+        } 
+        else if (*e == ')') {
+            while ((x = pop()) != '(')
+                printf("%c", x);
+        } 
+        else {
+            while (priority(stack[top]) >= priority(*e))
+                printf("%c", pop());
+            push(*e);
+        }
+        e++;
+    }
+
+    while (top != -1) {
+        printf("%c", pop());
+    }
+
+    return 0;
+}
